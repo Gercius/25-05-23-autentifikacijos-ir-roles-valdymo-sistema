@@ -1,0 +1,25 @@
+@use "sass:map";
+
+$breakpoints: (
+    "sm": 576,
+    "md": 768,
+    "lg": 1024,
+    "xl": 1280,
+    "xxl": 1536,
+);
+
+// Accepts breakpoint maps: "sm", "md" etc. Or string/number values without specifying units
+@mixin responsive($breakpoint) {
+    $breakpoint-value: map.get($breakpoints, $breakpoint);
+    @if $breakpoint-value {
+        @media (min-width: $breakpoint-value) {
+            @content;
+        }
+    } @else if not $breakpoint-value {
+        @media (min-width: #{$breakpoint}px) {
+            @content;
+        }
+    } @else {
+        @warn "No value found for breakpoint `#{$breakpoint}`.";
+    }
+}

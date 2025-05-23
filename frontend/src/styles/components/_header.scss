@@ -1,0 +1,65 @@
+@use "../colors" as *;
+@use "../mixins" as *;
+
+header {
+    background-color: $green-200;
+    color: $dark-900;
+    border-radius: 0 0 5px 5px;
+
+    .logo-burger-menu-wrapper {
+        height: 60px;
+        padding: 0.5rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-menu-btn {
+        all: unset;
+        width: 34px;
+        display: flex;
+        justify-content: center;
+
+        @include responsive(650) {
+            display: none;
+        }
+    }
+
+    nav {
+        li:hover {
+            color: $dark-100;
+        }
+
+        li a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        &.menu-mobile ul {
+            display: flex;
+            flex-direction: column;
+        }
+
+        &.menu-mobile ul li {
+            padding: 0.5rem 1rem;
+            border-bottom: 1px solid $dark-900;
+
+            &:first-of-type {
+                border-top: 1px solid $dark-900;
+            }
+        }
+
+        &.menu-desktop {
+            display: none;
+
+            @include responsive(650) {
+                display: block;
+            }
+        }
+
+        &.menu-desktop ul {
+            display: flex;
+            column-gap: 1.5rem;
+        }
+    }
+}
