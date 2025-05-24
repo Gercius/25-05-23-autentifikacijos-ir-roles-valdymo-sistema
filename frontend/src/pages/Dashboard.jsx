@@ -1,5 +1,9 @@
+import { useAuth } from "../context/AuthContext";
+
 const Dashboard = () => {
-    return <div>Dashboard</div>;
+    const { userRoles } = useAuth();
+
+    return <div>{userRoles.includes("admin") ? <p>Veri nais, uzeikit</p> : <p>Ate</p>}</div>;
 };
 
 export default Dashboard;

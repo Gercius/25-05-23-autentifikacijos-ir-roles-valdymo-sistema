@@ -9,40 +9,22 @@ export const login = async (email, password) => {
         body: JSON.stringify({ email, password }),
     });
 
-    const userData = res.data;
-
-    if (userData.token) {
-        localStorage.setItem("jwtToken", userData.token);
-    }
-
-    if (userData.id) {
-        localStorage.setItem("userId", userData.id);
-    }
-
-    return userData;
+    return res.data;
 };
 
 //Register
 export const register = async (userData) => {
-    const data = await fetchRequest(API_URL, "/register", {
+    const res = await fetchRequest(API_URL, "/register", {
         method: "POST",
         body: JSON.stringify(userData),
     });
 
-    if (userData.token) {
-        localStorage.setItem("jwtToken", userData.token);
-    }
-
-    if (userData.id) {
-        localStorage.setItem("userId", userData.id);
-    }
-    console.log(data);
-    return data;
+    return res.data;
 };
 
 //Logout
-
 export const logout = () => {
     localStorage.removeItem("jwtToken");
     localStorage.removeItem("userId");
+    localStorage.removeItem("userRoles");
 };

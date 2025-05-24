@@ -5,20 +5,32 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(() => localStorage.getItem("jwtToken") || null);
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [userRoles, setUserRoles] = useState(() => JSON.parse(localStorage.getItem("userRoles")) || []);
+    const [isLoggedIn, setIsLoggedIn] = useState(() => !!localStorage.getItem("jwtToken"));
 
     useEffect(() => {
-        setIsLoggedIn(!!token);
         if (token) {
+            setIsLoggedIn(true);
             localStorage.setItem("jwtToken", token);
         } else {
+            setIsLoggedIn(false);
             localStorage.removeItem("jwtToken");
         }
     }, [token]);
 
     const getResponse = async (response) => {
         const data = await response;
-        if (data?.token) setToken(data.token);
+
+        if (data?.token) {
+            setToken(data.token);
+            localStorage.setItem("jwtToken", data.token);
+        }
+        if (data?.roles) {
+            setUserRoles(data.roles);
+            localStorage.setItem("userRoles", JSON.stringify(data.roles));
+        }
+        if (data.id) localStorage.setItem("userId", data.id);
+
         return data;
     };
 
@@ -30,6 +42,7 @@ export const AuthProvider = ({ children }) => {
     // Logout
     const logout = async () => {
         setToken(null);
+        setUserRoles([]);
         authServices.logout();
     };
 
@@ -39,7 +52,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ token, isLoggedIn, setToken, login, logout, register, getResponse }}>
+        <AuthContext.Provider value={{ token, isLoggedIn, setToken, login, logout, register, getResponse, userRoles }}>
             {children}
         </AuthContext.Provider>
     );

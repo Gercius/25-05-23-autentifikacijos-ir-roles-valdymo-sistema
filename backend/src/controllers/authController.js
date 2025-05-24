@@ -45,16 +45,28 @@ export const register = async (req, res, next) => {
 export const login = async (req, res, next) => {
     const { email, password } = req.body;
     try {
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) throw new AppError("Vartotojas nerastas", 404);
+        const user = await prisma.user.findUnique({
+            where: { email },
+            include: {
+                userRoles: {
+                    include: {
+                        role: true,
+                    },
+                },
+            },
+        });
 
+        if (!user) throw new AppError("Vartotojas nerastas", 404);
         if (user.blocked) throw new AppError("Vartotojas uzblokuotas", 403);
 
         const match = await bcrypt.compare(password, user.password);
         if (!match) throw new AppError("Neteisingas slaptazodis", 401);
 
+        const roles = user.userRoles.map((userRole) => userRole.role.name);
+
         const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1d" });
-        res.json({ data: { token, id: user.id } });
+
+        res.json({ data: { token, id: user.id, roles } });
     } catch (error) {
         next(error);
     }
