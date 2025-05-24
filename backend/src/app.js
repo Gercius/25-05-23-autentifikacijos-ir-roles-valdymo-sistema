@@ -1,10 +1,12 @@
 import express from "express";
+import cors from "cors";
 import errorHandler from "./middleware/errorHandlerMIddleware.js";
 import authRouter from "./routes/authRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {

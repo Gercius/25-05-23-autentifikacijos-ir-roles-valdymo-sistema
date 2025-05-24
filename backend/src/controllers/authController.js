@@ -30,7 +30,13 @@ export const register = async (req, res, next) => {
             },
         });
 
-        res.status(201).json({ message: "Registracija sekminga", user });
+        res.status(201).json({
+            message: "Registracija sekminga",
+            user: {
+                id: user.id,
+                email: user.email,
+            },
+        });
     } catch (error) {
         next(error);
     }
@@ -48,7 +54,7 @@ export const login = async (req, res, next) => {
         if (!match) throw new AppError("Neteisingas slaptazodis", 401);
 
         const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: "1d" });
-        res.json({ token });
+        res.json({ data: { token, id: user.id } });
     } catch (error) {
         next(error);
     }
